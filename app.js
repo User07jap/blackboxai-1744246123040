@@ -1,3 +1,22 @@
+// Authentication functions
+async function login(username, password) {
+    const response = await fetch(`${API_URL}/login`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username, password})
+    });
+    return await response.json();
+}
+
+async function register(username, password) {
+    const response = await fetch(`${API_URL}/register`, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({username, password})
+    });
+    return await response.json();
+}
+
 // Inventory array to store scanned items
 let inventory = [];
 
@@ -190,12 +209,15 @@ function updateInventoryDisplay() {
     });
 }
 
-const API_URL = 'http://localhost:8080/api/items';
+const API_URL = 'http://127.0.0.1:10000/api';
 
 // Fetch inventory from backend
 async function loadInventory() {
     try {
-        const response = await fetch(API_URL);
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) return;
+        
+        const response = await fetch(`${API_URL}/inventory?user_id=${user.id}`);
         inventory = await response.json();
         updateInventoryDisplay();
     } catch (error) {
@@ -206,12 +228,16 @@ async function loadInventory() {
 // Save item to backend
 async function saveItem(item) {
     try {
-        const response = await fetch(API_URL, {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (!user) return;
+        
+        const response = await fetch(`${API_URL}/scan`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
+                user_id: user.id,
                 barcode: item.barcode,
                 name: item.name,
                 quantity: item.quantity
