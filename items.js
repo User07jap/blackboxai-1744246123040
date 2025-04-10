@@ -1,11 +1,17 @@
-const API_URL = 'http://localhost:8080/api/items';
+// Initialize localStorage with sample data if empty
+if (!localStorage.getItem('inventoryItems')) {
+    localStorage.setItem('inventoryItems', JSON.stringify([
+        {barcode: '123456', name: 'Sample Product 1', quantity: 10},
+        {barcode: '789012', name: 'Sample Product 2', quantity: 5},
+        {barcode: '345678', name: 'Sample Product 3', quantity: 8}
+    ]));
+}
+
 const itemsTableBody = document.getElementById('itemsTableBody');
 
 async function loadItems() {
     try {
-        const response = await fetch(API_URL);
-        const items = await response.json();
-        
+        const items = JSON.parse(localStorage.getItem('inventoryItems'));
         itemsTableBody.innerHTML = '';
         
         items.forEach(item => {
@@ -32,9 +38,9 @@ async function loadItems() {
 async function deleteItem(barcode) {
     if (confirm('Are you sure you want to delete this item?')) {
         try {
-            await fetch(`${API_URL}/${barcode}`, {
-                method: 'DELETE'
-            });
+            const items = JSON.parse(localStorage.getItem('inventoryItems'));
+            const updatedItems = items.filter(item => item.barcode !== barcode);
+            localStorage.setItem('inventoryItems', JSON.stringify(updatedItems));
             await loadItems();
         } catch (error) {
             console.error('Error deleting item:', error);
