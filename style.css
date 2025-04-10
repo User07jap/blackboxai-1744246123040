@@ -1,63 +1,58 @@
 /* Scanner Viewport Styles */
 #interactive.viewport {
-    position: fixed;
-    top: 0;
-    left: 0;
+    position: relative;
     width: 100%;
-    height: 100%;
+    height: auto;
     overflow: hidden;
-    background: black;
-    z-index: 1000;
-    display: none;
+    border-radius: 0.5rem;
+    margin-bottom: 1rem;
+    background: #f3f4f6;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .scanner-active #interactive.viewport {
-    display: block;
-}
-
-.scanner-active {
-    overflow: hidden;
+    border: 2px solid #2563eb;
+    animation: pulse 2s infinite;
 }
 
 /* Scanner Canvas and Video Elements */
 #interactive.viewport canvas,
 #interactive.viewport video {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
     width: 100%;
-    max-width: 640px;
     height: auto;
+    border-radius: 0.5rem;
 }
 
 #interactive.viewport canvas.drawingBuffer {
-    position: absolute;
-    top: 0;
-    left: 50%;
-    transform: translateX(-50%);
+    position: relative;
+    transform: none;
+    left: auto;
     z-index: 1;
 }
 
 /* Scanner Controls */
 .scanner-controls {
-    position: fixed;
-    bottom: 20px;
-    left: 0;
-    right: 0;
     display: flex;
     justify-content: center;
-    z-index: 1001;
+    margin-top: 1rem;
 }
 
 .scanner-controls button {
-    margin: 0 10px;
-    padding: 12px 24px;
-    font-size: 16px;
-    background: rgba(0,0,0,0.7);
+    margin: 0 0.5rem;
+    padding: 0.75rem 1.5rem;
+    font-size: 1rem;
+    background: #ef4444;
     color: white;
     border: none;
-    border-radius: 4px;
+    border-radius: 0.5rem;
+    transition: background-color 0.2s;
+}
+
+.scanner-controls button:hover {
+    background: #dc2626;
 }
 
 /* Inventory List Styles */
@@ -65,13 +60,37 @@
     min-height: 200px;
     max-height: 60vh;
     overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: #2563eb #f3f4f6;
+    border-radius: 0.5rem;
+    background: white;
+    padding: 0.5rem;
+}
+
+#inventoryList::-webkit-scrollbar {
+    width: 8px;
+}
+
+#inventoryList::-webkit-scrollbar-track {
+    background: #f3f4f6;
+    border-radius: 0 0.5rem 0.5rem 0;
+}
+
+#inventoryList::-webkit-scrollbar-thumb {
+    background-color: #2563eb;
+    border-radius: 0.5rem;
 }
 
 .inventory-item {
     display: flex;
     justify-content: space-between;
-    padding: 0.5rem;
-    border-bottom: 1px solid #eee;
+    padding: 0.75rem;
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s;
+}
+
+.inventory-item:hover {
+    background-color: #f9fafb;
 }
 
 .inventory-item:last-child {
@@ -81,26 +100,44 @@
 .remove-item {
     color: #ef4444;
     cursor: pointer;
+    transition: color 0.2s;
 }
 
 .remove-item:hover {
     color: #dc2626;
 }
 
+/* Animation for scanner */
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+}
+
 /* Responsive Styles */
 @media (max-width: 768px) {
-    .container {
-        padding: 0;
+    #interactive.viewport {
+        min-height: 150px;
+    }
+    
+    .scanner-controls button {
+        padding: 0.5rem 1rem;
     }
     
     #inventoryList {
         max-height: 40vh;
     }
+}
+
+/* Print styles */
+@media print {
+    header, footer, .features-section {
+        display: none;
+    }
     
-    #interactive.viewport canvas,
-    #interactive.viewport video {
-        width: 100%;
+    #inventoryList {
         height: auto;
+        overflow: visible;
     }
 }
 
